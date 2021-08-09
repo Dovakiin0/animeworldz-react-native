@@ -1,13 +1,22 @@
 import React from "react";
 import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useTheme } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/core";
 
-const Cards = ({ img, title, extra }) => {
+const Cards = ({ img, title, extra, href }) => {
+  const navigation = useNavigation();
   const { colors } = useTheme();
+
+  const handleClick = () => {
+    navigation.navigate("Details", {
+      uri: href,
+    });
+  };
+
   return (
     <View style={styles.container}>
       {/* Image */}
-      <TouchableOpacity>
+      <TouchableOpacity onPress={handleClick}>
         <View style={styles.imgWrapper}>
           <Image
             style={styles.coverImg}
@@ -52,6 +61,7 @@ const styles = StyleSheet.create({
   titleWrpper: {},
   extra: {
     backgroundColor: "#aa647b",
+    opacity: 0.8,
     width: 200,
     height: 25,
     position: "absolute",
@@ -63,5 +73,6 @@ const styles = StyleSheet.create({
   extraText: {
     fontWeight: "bold",
     color: "#FFF",
+    paddingLeft: 10,
   },
 });

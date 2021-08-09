@@ -1,10 +1,12 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
+import EpisodeList from "../components/EpisodeList";
 
 const Favourite = () => {
   return (
-    <View>
+    <View style={styles.container}>
       <Text>Favourite</Text>
+      <EpisodeList />
     </View>
   );
 };

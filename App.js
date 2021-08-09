@@ -18,10 +18,12 @@ import {
   DarkContext,
 } from "./app/context/AnimeContext";
 import axios from "axios";
+import Search from "./app/screens/Search";
+import Details from "./app/screens/Details";
 
 export default function App() {
-  const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
+  const Stack = createNativeStackNavigator();
   const [popular, setPopular] = useState([]);
   const [schedule, setSchedule] = useState({});
   const [darkMode, setDarkMode] = useState(true);
@@ -56,60 +58,87 @@ export default function App() {
       <PopularContext.Provider value={{ popular }}>
         <ScheduleContext.Provider value={{ schedule }}>
           <NavigationContainer theme={Theme}>
-            <Tab.Navigator>
-              <Tab.Screen
-                name="Home"
-                component={HomeScreen}
-                options={{
-                  title: "ANIMEWORLD-Z",
-                  tabBarLabel: "Home",
-                  tabBarIcon: ({ color }) => (
-                    <Icon color={color} type="octicon" name="home" />
-                  ),
-                  tabBarActiveTintColor: darkMode ? "#fff" : "#000",
-                }}
+            <Stack.Navigator>
+              <Stack.Screen name="Home" options={{ headerShown: false }}>
+                {(props) => <Home {...props} Tab={Tab} darkMode={darkMode} />}
+              </Stack.Screen>
+              <Stack.Screen
+                name="Details"
+                component={Details}
+                option={{ headerShown: false }}
               />
-              <Tab.Screen
-                name="Schedule"
-                component={Schedule}
-                options={{
-                  title: "ANIMEWORLD-Z",
-                  tabBarLabel: "Schedule",
-                  tabBarIcon: ({ color }) => (
-                    <Icon color={color} type="material" name="schedule" />
-                  ),
-                  tabBarActiveTintColor: darkMode ? "#fff" : "#000",
-                }}
-              />
-              <Tab.Screen
-                name="Favourite"
-                component={Favourite}
-                options={{
-                  title: "ANIMEWORLD-Z",
-                  tabBarLabel: "Favourite",
-                  tabBarIcon: ({ color }) => (
-                    <Icon color={color} type="octicon" name="heart" />
-                  ),
-                  tabBarActiveTintColor: darkMode ? "#fff" : "#000",
-                }}
-              />
-              <Tab.Screen
-                name="Setting"
-                component={Setting}
-                options={{
-                  title: "ANIMEWORLD-Z",
-                  tabBarLabel: "Settings",
-                  tabBarIcon: ({ color }) => (
-                    <Icon color={color} type="material" name="settings" />
-                  ),
-                  tabBarActiveTintColor: darkMode ? "#fff" : "#000",
-                }}
-              />
-            </Tab.Navigator>
+            </Stack.Navigator>
             <StatusBar style={darkMode ? "light" : "dark"} />
           </NavigationContainer>
         </ScheduleContext.Provider>
       </PopularContext.Provider>
     </DarkContext.Provider>
+  );
+}
+
+function Home({ Tab, darkMode }) {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen
+        name="HomScreen"
+        component={HomeScreen}
+        options={{
+          title: "ANIMEWORLD-Z",
+          tabBarLabel: "Home",
+          tabBarIcon: ({ color }) => (
+            <Icon color={color} type="octicon" name="home" />
+          ),
+          tabBarActiveTintColor: darkMode ? "#fff" : "#000",
+        }}
+      />
+      <Tab.Screen
+        name="Search"
+        component={Search}
+        options={{
+          title: "ANIMEWORLD-Z",
+          tabBarLabel: "Search",
+          tabBarIcon: ({ color }) => (
+            <Icon color={color} type="material" name="search" />
+          ),
+          tabBarActiveTintColor: darkMode ? "#fff" : "#000",
+        }}
+      />
+      <Tab.Screen
+        name="Favourite"
+        component={Favourite}
+        options={{
+          title: "ANIMEWORLD-Z",
+          tabBarLabel: "Favourite",
+          tabBarIcon: ({ color }) => (
+            <Icon color={color} type="octicon" name="heart" />
+          ),
+          tabBarActiveTintColor: darkMode ? "#fff" : "#000",
+        }}
+      />
+      <Tab.Screen
+        name="Schedule"
+        component={Schedule}
+        options={{
+          title: "ANIMEWORLD-Z",
+          tabBarLabel: "Schedule",
+          tabBarIcon: ({ color }) => (
+            <Icon color={color} type="material" name="schedule" />
+          ),
+          tabBarActiveTintColor: darkMode ? "#fff" : "#000",
+        }}
+      />
+      <Tab.Screen
+        name="Setting"
+        component={Setting}
+        options={{
+          title: "ANIMEWORLD-Z",
+          tabBarLabel: "Settings",
+          tabBarIcon: ({ color }) => (
+            <Icon color={color} type="material" name="settings" />
+          ),
+          tabBarActiveTintColor: darkMode ? "#fff" : "#000",
+        }}
+      />
+    </Tab.Navigator>
   );
 }
