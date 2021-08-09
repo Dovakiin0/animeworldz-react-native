@@ -1,22 +1,115 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { NavigationContainer, DarkTheme } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import {
+  NavigationContainer,
+  DarkTheme,
+  DefaultTheme,
+} from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "./app/screens/HomeScreen";
+import Schedule from "./app/screens/Schedule";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Favourite from "./app/screens/Favourite";
+import Setting from "./app/screens/Setting";
+import { Icon } from "react-native-elements";
+import {
+  PopularContext,
+  ScheduleContext,
+  DarkContext,
+} from "./app/context/AnimeContext";
+import axios from "axios";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
+  const Tab = createBottomTabNavigator();
+  const [popular, setPopular] = useState([]);
+  const [schedule, setSchedule] = useState({});
+  const [darkMode, setDarkMode] = useState(true);
+
+  const Theme = darkMode ? DarkTheme : DefaultTheme;
+
+  const getPopular = () => {
+    axios
+      .get("https://animeworldz.herokuapp.com/api/v1/anime/popular/1")
+      .then((res) => {
+        setPopular(res.data);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const getSchedule = () => {
+    axios
+      .post("https://animeworldz.herokuapp.com/api/v1/schedule", { day: "" })
+      .then((res) => {
+        setSchedule(res.data);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    getPopular();
+    getSchedule();
+  }, []);
 
   return (
-    <NavigationContainer theme={DarkTheme}>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ title: "ANIMEWORLD-Z" }}
-        />
-      </Stack.Navigator>
-      <StatusBar style="light" />
-    </NavigationContainer>
+    <DarkContext.Provider value={{ darkMode, setDarkMode }}>
+      <PopularContext.Provider value={{ popular }}>
+        <ScheduleContext.Provider value={{ schedule }}>
+          <NavigationContainer theme={Theme}>
+            <Tab.Navigator>
+              <Tab.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                  title: "ANIMEWORLD-Z",
+                  tabBarLabel: "Home",
+                  tabBarIcon: ({ color }) => (
+                    <Icon color={color} type="octicon" name="home" />
+                  ),
+                  tabBarActiveTintColor: darkMode ? "#fff" : "#000",
+                }}
+              />
+              <Tab.Screen
+                name="Schedule"
+                component={Schedule}
+                options={{
+                  title: "ANIMEWORLD-Z",
+                  tabBarLabel: "Schedule",
+                  tabBarIcon: ({ color }) => (
+                    <Icon color={color} type="material" name="schedule" />
+                  ),
+                  tabBarActiveTintColor: darkMode ? "#fff" : "#000",
+                }}
+              />
+              <Tab.Screen
+                name="Favourite"
+                component={Favourite}
+                options={{
+                  title: "ANIMEWORLD-Z",
+                  tabBarLabel: "Favourite",
+                  tabBarIcon: ({ color }) => (
+                    <Icon color={color} type="octicon" name="heart" />
+                  ),
+                  tabBarActiveTintColor: darkMode ? "#fff" : "#000",
+                }}
+              />
+              <Tab.Screen
+                name="Setting"
+                component={Setting}
+                options={{
+                  title: "ANIMEWORLD-Z",
+                  tabBarLabel: "Settings",
+                  tabBarIcon: ({ color }) => (
+                    <Icon color={color} type="material" name="settings" />
+                  ),
+                  tabBarActiveTintColor: darkMode ? "#fff" : "#000",
+                }}
+              />
+            </Tab.Navigator>
+            <StatusBar style={darkMode ? "light" : "dark"} />
+          </NavigationContainer>
+        </ScheduleContext.Provider>
+      </PopularContext.Provider>
+    </DarkContext.Provider>
   );
 }

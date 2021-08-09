@@ -1,16 +1,24 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState, useEffect, useContext } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import { useTheme } from "@react-navigation/native";
 import Cards from "../components/Cards";
 import axios from "axios";
+import { PopularContext } from "../context/AnimeContext";
 
 const HomeScreen = () => {
   const { colors } = useTheme();
   const [recent, setrecent] = useState([]);
+  const { popular } = useContext(PopularContext);
 
   const getRecent = async () => {
     axios
-      .get("http://localhost:3030/api/v1/anime/recent/1")
+      .get("https://animeworldz.herokuapp.com/api/v1/anime/recent/1")
       .then((res) => {
         setrecent(res.data);
       })
@@ -22,28 +30,38 @@ const HomeScreen = () => {
   }, []);
 
   return (
-    <View>
+    <View style={styles.container}>
       <Text style={[styles.title, { color: colors.text }]}>Recent Release</Text>
-      <View style={styles.cardContainer}>
-        {recent.length !== 0
-          ? recent.map((anime, i) => (
-              <Cards
-                title={anime.name}
-                img={anime.img}
-                extra={anime.recent_episode}
-              />
-            ))
-          : ""}
-        <Cards />
-      </View>
+      <ScrollView style={styles.cardContainer} horizontal={true}>
+        {recent.length !== 0 ? (
+          recent.map((anime, i) => (
+            <Cards
+              key={i}
+              title={anime.name}
+              img={anime.img}
+              extra={anime.recent_episode}
+            />
+          ))
+        ) : (
+          <ActivityIndicator size="large" />
+        )}
+      </ScrollView>
 
       <Text style={[styles.title, { color: colors.text }]}>Popular Anime</Text>
-      <View style={styles.cardContainer}>
-        <Cards />
-        <Cards />
-        <Cards />
-        <Cards />
-      </View>
+      <ScrollView style={styles.cardContainer} horizontal={true}>
+        {popular.length !== 0 ? (
+          popular.map((anime, i) => (
+            <Cards
+              key={i}
+              title={anime.name}
+              img={anime.img}
+              extra={anime.release}
+            />
+          ))
+        ) : (
+          <ActivityIndicator size="large" />
+        )}
+      </ScrollView>
     </View>
   );
 };
@@ -51,9 +69,10 @@ const HomeScreen = () => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
+  container: {},
   cardContainer: {
-    flexDirection: "row",
-    overflow: "scroll",
+    // flexDirection: "row",
+    // overflow: "scroll",
   },
   title: {
     fontSize: 20,

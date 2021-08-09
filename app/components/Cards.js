@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useTheme } from "@react-navigation/native";
 
 const Cards = ({ img, title, extra }) => {
@@ -7,24 +7,22 @@ const Cards = ({ img, title, extra }) => {
   return (
     <View style={styles.container}>
       {/* Image */}
-      <View style={styles.imgWrapper}>
-        <Image
-          style={styles.coverImg}
-          source={{
-            uri: img,
-          }}
-          resizeMode="cover"
-        />
-        <View style={styles.extra}>
-          <Text style={[{ color: colors.text }, styles.extraText]}>
-            {extra}
-          </Text>
+      <TouchableOpacity>
+        <View style={styles.imgWrapper}>
+          <Image
+            style={styles.coverImg}
+            source={{
+              uri: img,
+            }}
+            resizeMode="cover"
+          />
+          <View style={styles.extra}>
+            <Text style={styles.extraText}>{extra}</Text>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
       {/* title */}
-      <View style={styles.titleWrpper}>
-        <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
-      </View>
+      <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
     </View>
   );
 };
@@ -35,6 +33,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     margin: 5,
+    width: 200,
   },
   imgWrapper: {
     justifyContent: "center",
@@ -50,12 +49,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     flexWrap: "wrap",
   },
-  titleWrpper: {
-    flex: 1,
-  },
+  titleWrpper: {},
   extra: {
     backgroundColor: "#aa647b",
-    width: "100%",
+    width: 200,
     height: 25,
     position: "absolute",
     bottom: 0,
@@ -65,5 +62,6 @@ const styles = StyleSheet.create({
   },
   extraText: {
     fontWeight: "bold",
+    color: "#FFF",
   },
 });
