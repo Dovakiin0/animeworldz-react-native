@@ -42,7 +42,7 @@ export default Cards;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    padding: 5,
     margin: 5,
     width: 200,
   },
