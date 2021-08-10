@@ -10,6 +10,8 @@ const Cards = ({ img, title, extra, href }) => {
   const handleClick = () => {
     navigation.navigate("Details", {
       uri: href,
+      title,
+      link: `/category/${title.replace(/\s/g, "-").toLowerCase()}`,
     });
   };
 
@@ -60,8 +62,8 @@ const styles = StyleSheet.create({
   },
   titleWrpper: {},
   extra: {
-    backgroundColor: "#aa647b",
-    opacity: 0.8,
+    backgroundColor: "orange",
+    // opacity: 0.8,
     width: 200,
     height: 25,
     position: "absolute",

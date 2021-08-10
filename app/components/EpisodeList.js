@@ -1,15 +1,27 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useNavigation } from "@react-navigation/core";
 
-const EpisodeList = ({ ep, slug, title }) => {
+const EpisodeList = ({ ep, slug, title, count }) => {
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    navigation.navigate("Episode", {
+      episode: ep,
+      slug,
+      title,
+      count,
+    });
+  };
+
   return (
-    <View style={styles.container}>
-      <TouchableOpacity>
+    <TouchableOpacity onPress={handlePress}>
+      <View style={styles.container}>
         <Text style={styles.text}>
-          Watch {ep} of {title}
+          Watch Episode {ep} of {title}
         </Text>
-      </TouchableOpacity>
-    </View>
+      </View>
+    </TouchableOpacity>
   );
 };
 
@@ -20,12 +32,14 @@ const styles = StyleSheet.create({
     display: "flex",
     width: "100%",
     height: 50,
-    borderColor: "green",
+    borderColor: "orange",
     borderWidth: 1,
     borderRadius: 5,
     justifyContent: "center",
+    padding: 15,
+    marginBottom: 10,
   },
   text: {
-    color: "green",
+    color: "orange",
   },
 });

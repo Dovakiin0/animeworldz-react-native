@@ -5,14 +5,16 @@ import { ScrollView, Image, StyleSheet, Text, View } from "react-native";
 import EpisodeList from "../components/EpisodeList";
 import Spinner from "../components/Spinner";
 
-const Details = ({ route }) => {
+const Details = ({ route, navigation }) => {
   const { colors } = useTheme();
   const [animeDetails, setAnimeDetails] = useState({});
-  const { uri } = route.params;
+  const { uri, link } = route.params;
 
   const getAnimeDetails = () => {
     axios
-      .post("https://animeworldz.herokuapp.com/api/v1/anime", { uri })
+      .post("https://animeworldz.herokuapp.com/api/v1/anime", {
+        uri: uri ? uri : link,
+      })
       .then((res) => {
         setAnimeDetails(res.data);
       })
@@ -52,7 +54,11 @@ const Details = ({ route }) => {
         </Text>
 
         <View style={styles.episodeContainer}>
-          <Text style={[{ color: colors.text }, styles.title]}>Episodes</Text>
+          <Text
+            style={[{ color: colors.text }, styles.title, styles.episodeTitle]}
+          >
+            Episodes
+          </Text>
           <View style={styles.episodeList}>
             {[...Array(parseInt(animeDetails.episode_count))].map((e, i) => (
               <EpisodeList
@@ -60,6 +66,7 @@ const Details = ({ route }) => {
                 title={animeDetails.title}
                 slug={animeDetails.slug}
                 ep={i + 1}
+                count={animeDetails.episode_count}
               />
             ))}
           </View>
@@ -109,8 +116,7 @@ const styles = StyleSheet.create({
   episodeContainer: {
     marginTop: 15,
   },
-  episodeList: {},
-  episodeText: {
-    fontSize: 15,
+  episodeTitle: {
+    marginBottom: 15,
   },
 });

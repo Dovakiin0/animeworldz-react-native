@@ -4,11 +4,16 @@ import { StyleSheet, View, Image } from "react-native";
 const Spinner = () => {
   return (
     <View>
-      <Image source={require("../assets/genkai.gif")} />
+      <Image style={styles.spinner} source={require("../assets/genkai.gif")} />
     </View>
   );
 };
 
 export default Spinner;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  spinner: {
+    width: 100,
+    height: 100,
+  },
+});

@@ -20,6 +20,7 @@ import {
 import axios from "axios";
 import Search from "./app/screens/Search";
 import Details from "./app/screens/Details";
+import Episode from "./app/screens/Episode";
 
 export default function App() {
   const Tab = createBottomTabNavigator();
@@ -65,7 +66,12 @@ export default function App() {
               <Stack.Screen
                 name="Details"
                 component={Details}
-                option={{ headerShown: false }}
+                options={({ route }) => ({ title: route.params.title })}
+              />
+              <Stack.Screen
+                name="Episode"
+                component={Episode}
+                options={({ route }) => ({ title: route.params.title })}
               />
             </Stack.Navigator>
             <StatusBar style={darkMode ? "light" : "dark"} />
