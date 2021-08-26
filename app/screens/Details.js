@@ -43,6 +43,9 @@ const Details = ({ route, navigation }) => {
           </Text>
         </View>
         <Text style={[{ color: colors.text }]}>
+          Genre: {animeDetails.genre.join(", ")}
+        </Text>
+        <Text style={[{ color: colors.text }]}>
           Released: {animeDetails.released}
         </Text>
         <Text style={[{ color: colors.text }]}>
