@@ -4,11 +4,15 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, Image, StyleSheet, Text, View } from "react-native";
 import EpisodeList from "../components/EpisodeList";
 import Spinner from "../components/Spinner";
+import { Icon } from "react-native-elements";
+import { TouchableOpacity } from "react-native";
+import DB from "../services/db";
 
 const Details = ({ route, navigation }) => {
   const { colors } = useTheme();
   const [animeDetails, setAnimeDetails] = useState({});
   const { uri, link } = route.params;
+  const [favorite, setFavorite] = useState(false);
 
   const getAnimeDetails = () => {
     axios
@@ -24,6 +28,23 @@ const Details = ({ route, navigation }) => {
   useEffect(() => {
     getAnimeDetails();
   }, []);
+
+  const handleClickFavourite = async () => {
+    await DB.transaction(async (tx) => {
+      if (!favorite) {
+        await tx.executeSql(
+          "INSERT INTO Favourites (title, image, released) VALUES (?,?,?)",
+          [animeDetails.title, animeDetails.img, animeDetails.released]
+        );
+        setFavorite(true);
+      } else {
+        await tx.executeSql(`DELETE FROM Favourites WHERE title=?`, [
+          animeDetails.title,
+        ]);
+        setFavorite(false);
+      }
+    });
+  };
 
   return Object.entries(animeDetails).length !== 0 ? (
     <View style={styles.container}>
@@ -55,7 +76,18 @@ const Details = ({ route, navigation }) => {
         <Text style={[{ color: colors.text }]}>
           Episode Count: {animeDetails.episode_count}
         </Text>
-
+        <TouchableOpacity onPress={handleClickFavourite}>
+          <View style={[styles.favorite]}>
+            <Icon
+              type="material"
+              name={favorite ? "favorite" : "favorite-border"}
+              color="orange"
+            />
+            <Text style={[{ color: colors.text }, styles.favoriteText]}>
+              {favorite ? "remove from favourite" : "Add To Favourite"}
+            </Text>
+          </View>
+        </TouchableOpacity>
         <View style={styles.episodeContainer}>
           <Text
             style={[{ color: colors.text }, styles.title, styles.episodeTitle]}
@@ -90,6 +122,19 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     margin: 5,
+  },
+  favorite: {
+    marginTop: 10,
+    width: "50%",
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  favoriteText: {
+    padding: 10,
+    alignSelf: "center",
+    textTransform: "uppercase",
+    fontWeight: "bold",
   },
   spinner: {
     flex: 1,
