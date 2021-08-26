@@ -5,27 +5,38 @@ import { ScrollView } from "react-native";
 import Cards from "../components/Cards";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Spinner from "../components/Spinner";
+import { useIsFocused } from "@react-navigation/native";
 
 const Favourite = () => {
   const { colors } = useTheme();
+  const [keys, setKeys] = useState([]);
   const [favourite, setFavourite] = useState([]);
+  const isFocused = useIsFocused();
 
-  const fetchFavourites = async () => {
-    let arr = [];
-    let keys = await AsyncStorage.getAllKeys();
-    keys.map(async (key) => {
-      await AsyncStorage.getItem(key, (err, res) => {
-        arr.push(JSON.parse(res));
+  const fetchkeys = async () => {
+    let key = await AsyncStorage.getAllKeys();
+    setKeys(key);
+  };
+
+  const fetchFavourites = () => {
+    setFavourite([]);
+    if (keys.length > 0) {
+      keys.map((key) => {
+        AsyncStorage.getItem(key)
+          .then((value) => {
+            setFavourite((prev) => [...prev, JSON.parse(value)]);
+          })
+          .catch((err) => console.log(err));
       });
-    });
-    setFavourite(arr);
+    }
   };
 
   useEffect(() => {
     fetchFavourites();
-  }, []);
+    fetchkeys();
+  }, [isFocused]);
 
-  return favourite.length !== 0 ? (
+  return favourite.length >= 0 ? (
     <View style={styles.container}>
       <Text style={[{ color: colors.text }, styles.title]}>Favourites</Text>
       <ScrollView>

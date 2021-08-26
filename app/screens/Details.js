@@ -1,6 +1,6 @@
-import { useTheme } from "@react-navigation/native";
+import { useTheme, useIsFocused } from "@react-navigation/native";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { ScrollView, Image, StyleSheet, Text, View } from "react-native";
 import EpisodeList from "../components/EpisodeList";
 import Spinner from "../components/Spinner";
@@ -8,11 +8,12 @@ import { Icon } from "react-native-elements";
 import { TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Details = ({ route, navigation }) => {
+const Details = ({ route }) => {
   const { colors } = useTheme();
   const [animeDetails, setAnimeDetails] = useState({});
   const { uri, link } = route.params;
   const [isFavorite, setIsFavorite] = useState(false);
+  const isFocused = useIsFocused();
 
   const getAnimeDetails = () => {
     axios
@@ -25,17 +26,22 @@ const Details = ({ route, navigation }) => {
       .catch((err) => console.log(err));
   };
 
-  const fetchFavourites = () => {
-    AsyncStorage.getItem(`${animeDetails.title}`).then((value) => {
+  const fetchFavourites = async () => {
+    try {
+      const value = await AsyncStorage.getItem(`${animeDetails.title}`);
       if (value !== null) setIsFavorite(true);
-      console.log(value);
-    });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
-    fetchFavourites();
     getAnimeDetails();
   }, []);
+
+  useEffect(() => {
+    if (isFocused) fetchFavourites();
+  }, [isFocused]);
 
   const handleClickFavourite = () => {
     let anime_details = {
