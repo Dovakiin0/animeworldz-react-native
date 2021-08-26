@@ -6,13 +6,13 @@ import EpisodeList from "../components/EpisodeList";
 import Spinner from "../components/Spinner";
 import { Icon } from "react-native-elements";
 import { TouchableOpacity } from "react-native";
-import DB from "../services/db";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Details = ({ route, navigation }) => {
   const { colors } = useTheme();
   const [animeDetails, setAnimeDetails] = useState({});
   const { uri, link } = route.params;
-  const [favorite, setFavorite] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const getAnimeDetails = () => {
     axios
@@ -25,25 +25,41 @@ const Details = ({ route, navigation }) => {
       .catch((err) => console.log(err));
   };
 
+  const fetchFavourites = () => {
+    AsyncStorage.getItem(`${animeDetails.title}`).then((value) => {
+      if (value !== null) setIsFavorite(true);
+      console.log(value);
+    });
+  };
+
   useEffect(() => {
+    fetchFavourites();
     getAnimeDetails();
   }, []);
 
-  const handleClickFavourite = async () => {
-    await DB.transaction(async (tx) => {
-      if (!favorite) {
-        await tx.executeSql(
-          "INSERT INTO Favourites (title, image, released) VALUES (?,?,?)",
-          [animeDetails.title, animeDetails.img, animeDetails.released]
-        );
-        setFavorite(true);
-      } else {
-        await tx.executeSql(`DELETE FROM Favourites WHERE title=?`, [
-          animeDetails.title,
-        ]);
-        setFavorite(false);
-      }
-    });
+  const handleClickFavourite = () => {
+    let anime_details = {
+      title: animeDetails.title,
+      img: animeDetails.img,
+      released: animeDetails.released,
+      link: `/category/${animeDetails.slug}`,
+    };
+    if (!isFavorite) {
+      AsyncStorage.setItem(
+        `${animeDetails.title}`,
+        JSON.stringify(anime_details)
+      )
+        .then(() => {
+          setIsFavorite(true);
+        })
+        .catch((err) => console.log(err));
+    } else {
+      AsyncStorage.removeItem(`${animeDetails.title}`)
+        .then(() => {
+          setIsFavorite(false);
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   return Object.entries(animeDetails).length !== 0 ? (
@@ -80,11 +96,11 @@ const Details = ({ route, navigation }) => {
           <View style={[styles.favorite]}>
             <Icon
               type="material"
-              name={favorite ? "favorite" : "favorite-border"}
+              name={isFavorite ? "favorite" : "favorite-border"}
               color="orange"
             />
             <Text style={[{ color: colors.text }, styles.favoriteText]}>
-              {favorite ? "remove from favourite" : "Add To Favourite"}
+              {isFavorite ? "remove from favourite" : "Add To Favourite"}
             </Text>
           </View>
         </TouchableOpacity>

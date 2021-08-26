@@ -21,7 +21,6 @@ import axios from "axios";
 import Search from "./app/screens/Search";
 import Details from "./app/screens/Details";
 import Episode from "./app/screens/Episode";
-import LoadDatabase from "./app/services/db";
 
 export default function App() {
   const Tab = createBottomTabNavigator();
@@ -29,22 +28,8 @@ export default function App() {
   const [popular, setPopular] = useState([]);
   const [schedule, setSchedule] = useState({});
   const [darkMode, setDarkMode] = useState(true);
-  const db = LoadDatabase();
 
   const Theme = darkMode ? DarkTheme : DefaultTheme;
-
-  const createTable = () => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS Favourites (
-          ID INTEGER PRIMARY KEY AUTOINCREMENT,
-          title TEXT,
-          image TEXT,
-          released TEXT
-        );`
-      );
-    });
-  };
 
   const getPopular = () => {
     axios
@@ -67,7 +52,6 @@ export default function App() {
   useEffect(() => {
     getPopular();
     getSchedule();
-    createTable();
   }, []);
 
   return (
