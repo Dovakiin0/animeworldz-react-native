@@ -23,7 +23,8 @@
     "react-native-screens": "~3.4.0",
     "react-native-web": "~0.13.12",
     "react-native-webview": "11.6.2",
-    "@react-native-async-storage/async-storage": "~1.15.0"
+    "@react-native-async-storage/async-storage": "~1.15.0",
+    "expo-keep-awake": "~9.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"

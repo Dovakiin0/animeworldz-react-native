@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useKeepAwake } from "expo-keep-awake";
 import { StyleSheet, Text, View, Button, TouchableOpacity } from "react-native";
 import axios from "axios";
 import { useTheme } from "@react-navigation/native";
@@ -7,6 +8,7 @@ import { WebView } from "react-native-webview";
 import { Icon } from "react-native-elements";
 
 const Episode = ({ route, navigation }) => {
+  useKeepAwake();
   const { colors } = useTheme();
   const { slug, episode, count } = route.params;
   const [ep, setEp] = useState(episode);

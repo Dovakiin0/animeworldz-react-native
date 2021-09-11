@@ -27,7 +27,7 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       {recent.length !== 0 && popular.length !== 0 ? (
-        <View>
+        <ScrollView>
           <Text style={[styles.title, { color: colors.text }]}>
             Recent Release
           </Text>
@@ -56,7 +56,7 @@ const HomeScreen = () => {
               />
             ))}
           </ScrollView>
-        </View>
+        </ScrollView>
       ) : (
         <View style={styles.spinner}>
           <Spinner />
