@@ -27,9 +27,8 @@ const Setting = () => {
         <Avatar
           rounded
           size="xlarge"
-          source={{
-            uri: "https://e7.pngegg.com/pngimages/772/811/png-clipart-love-chunibyo-other-delusions-ahoge-anime-konosuba-anime-black-hair-chibi.png",
-          }}
+          img
+          source={require("../assets/pp.jpeg")}
         />
         <Text style={[styles.abouttext, { color: colors.text }]}>
           Created By: Dovakiin0

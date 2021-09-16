@@ -6,6 +6,7 @@ import { useTheme } from "@react-navigation/native";
 import Spinner from "../components/Spinner";
 import { WebView } from "react-native-webview";
 import { Icon } from "react-native-elements";
+import { WifiContext } from "../context/AnimeContext";
 
 const Episode = ({ route, navigation }) => {
   useKeepAwake();
@@ -13,6 +14,7 @@ const Episode = ({ route, navigation }) => {
   const { slug, episode, count } = route.params;
   const [ep, setEp] = useState(episode);
   const [animeEpisode, setAnimeEpisode] = useState({});
+  const { wifiMode } = useContext(WifiContext);
 
   const getEpisode = () => {
     axios
@@ -27,7 +29,7 @@ const Episode = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    getEpisode();
+    if (wifiMode) getEpisode();
   }, [ep]);
 
   const handleNext = () => {

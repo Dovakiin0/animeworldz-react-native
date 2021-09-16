@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { SearchBar } from "react-native-elements";
-import { DarkContext } from "../context/AnimeContext";
+import { DarkContext, WifiContext } from "../context/AnimeContext";
 import axios from "axios";
 import Spinner from "../components/Spinner";
 import Cards from "../components/Cards";
@@ -23,6 +23,7 @@ const Search = () => {
   const { darkMode } = useContext(DarkContext);
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { wifiMode } = useContext(WifiContext);
 
   const handleChange = (val) => {
     setSearchString(val);
@@ -45,8 +46,10 @@ const Search = () => {
   };
 
   useEffect(() => {
-    let timer = setTimeout(() => getSearchAnime(), 1000);
-    return () => clearTimeout(timer);
+    if (wifiMode) {
+      let timer = setTimeout(() => getSearchAnime(), 1000);
+      return () => clearTimeout(timer);
+    }
   }, [searchString]);
 
   /*

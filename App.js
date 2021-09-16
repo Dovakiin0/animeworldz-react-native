@@ -52,7 +52,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    getPopular();
+    if (wifiMode) getPopular();
     getSchedule();
   }, []);
 

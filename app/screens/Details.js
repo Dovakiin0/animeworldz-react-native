@@ -1,18 +1,20 @@
 import { useTheme, useIsFocused } from "@react-navigation/native";
 import axios from "axios";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { ScrollView, Image, StyleSheet, Text, View } from "react-native";
 import EpisodeList from "../components/EpisodeList";
 import Spinner from "../components/Spinner";
 import { Icon } from "react-native-elements";
 import { TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { WifiContext } from "../context/AnimeContext";
 
 const Details = ({ route }) => {
   const { colors } = useTheme();
   const [animeDetails, setAnimeDetails] = useState({});
   const { uri, link } = route.params;
   const [isFavorite, setIsFavorite] = useState(false);
+  const { wifiMode } = useContext(WifiContext);
   const isFocused = useIsFocused();
 
   const getAnimeDetails = () => {
@@ -36,7 +38,7 @@ const Details = ({ route }) => {
   };
 
   useEffect(() => {
-    getAnimeDetails();
+    if (wifiMode) getAnimeDetails();
   }, []);
 
   useEffect(() => {

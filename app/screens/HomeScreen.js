@@ -3,12 +3,13 @@ import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import Cards from "../components/Cards";
 import axios from "axios";
-import { PopularContext } from "../context/AnimeContext";
+import { PopularContext, WifiContext } from "../context/AnimeContext";
 import Spinner from "../components/Spinner";
 
 const HomeScreen = () => {
   const { colors } = useTheme();
   const [recent, setrecent] = useState([]);
+  const { wifiMode } = useContext(WifiContext);
   const { popular } = useContext(PopularContext);
 
   const getRecent = async () => {
@@ -21,7 +22,7 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    getRecent();
+    if (wifiMode) getRecent();
   }, []);
 
   return (
