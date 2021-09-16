@@ -16,6 +16,7 @@ import {
   PopularContext,
   ScheduleContext,
   DarkContext,
+  WifiContext,
 } from "./app/context/AnimeContext";
 import axios from "axios";
 import Search from "./app/screens/Search";
@@ -28,6 +29,7 @@ export default function App() {
   const [popular, setPopular] = useState([]);
   const [schedule, setSchedule] = useState({});
   const [darkMode, setDarkMode] = useState(true);
+  const [wifiMode, setWifiMode] = useState(true);
 
   const Theme = darkMode ? DarkTheme : DefaultTheme;
 
@@ -56,28 +58,30 @@ export default function App() {
 
   return (
     <DarkContext.Provider value={{ darkMode, setDarkMode }}>
-      <PopularContext.Provider value={{ popular }}>
-        <ScheduleContext.Provider value={{ schedule }}>
-          <NavigationContainer theme={Theme}>
-            <Stack.Navigator>
-              <Stack.Screen name="Home" options={{ headerShown: false }}>
-                {(props) => <Home {...props} Tab={Tab} darkMode={darkMode} />}
-              </Stack.Screen>
-              <Stack.Screen
-                name="Details"
-                component={Details}
-                options={({ route }) => ({ title: route.params.title })}
-              />
-              <Stack.Screen
-                name="Episode"
-                component={Episode}
-                options={({ route }) => ({ title: route.params.title })}
-              />
-            </Stack.Navigator>
-            <StatusBar style={darkMode ? "light" : "dark"} />
-          </NavigationContainer>
-        </ScheduleContext.Provider>
-      </PopularContext.Provider>
+      <WifiContext.Provider value={{ wifiMode, setWifiMode }}>
+        <PopularContext.Provider value={{ popular }}>
+          <ScheduleContext.Provider value={{ schedule }}>
+            <NavigationContainer theme={Theme}>
+              <Stack.Navigator>
+                <Stack.Screen name="Home" options={{ headerShown: false }}>
+                  {(props) => <Home {...props} Tab={Tab} darkMode={darkMode} />}
+                </Stack.Screen>
+                <Stack.Screen
+                  name="Details"
+                  component={Details}
+                  options={({ route }) => ({ title: route.params.title })}
+                />
+                <Stack.Screen
+                  name="Episode"
+                  component={Episode}
+                  options={({ route }) => ({ title: route.params.title })}
+                />
+              </Stack.Navigator>
+              <StatusBar style={darkMode ? "light" : "dark"} />
+            </NavigationContainer>
+          </ScheduleContext.Provider>
+        </PopularContext.Provider>
+      </WifiContext.Provider>
     </DarkContext.Provider>
   );
 }

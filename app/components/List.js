@@ -1,20 +1,16 @@
-import React, { useContext } from "react";
+import React from "react";
 import { StyleSheet, Text, View, Switch } from "react-native";
-import { DarkContext } from "../context/AnimeContext";
 
-const List = () => {
-  const { darkMode, setDarkMode } = useContext(DarkContext);
-  const toggleSwitch = () => setDarkMode((previousState) => !previousState);
-
+const List = ({ boolean, func, title }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Dark Mode</Text>
+      <Text style={styles.title}>{title}</Text>
       <Switch
-        trackColor={{ false: "#767577", true: "#fc033d" }}
-        thumbColor={darkMode ? "#fff" : "#f4f3f4"}
+        trackColor={{ false: "#767577", true: "orange" }}
+        thumbColor={boolean ? "#fff" : "#f4f3f4"}
         ios_backgroundColor="#3e3e3e"
-        onValueChange={toggleSwitch}
-        value={darkMode}
+        onValueChange={func}
+        value={boolean}
       />
     </View>
   );
