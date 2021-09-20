@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useKeepAwake } from "expo-keep-awake";
 import { StyleSheet, Text, View, Button, TouchableOpacity } from "react-native";
 import axios from "axios";
