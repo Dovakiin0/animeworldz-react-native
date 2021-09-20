@@ -9,16 +9,13 @@ import {
 import { useTheme } from "@react-navigation/native";
 import List from "../components/List";
 import { Avatar, Icon } from "react-native-elements";
-import { DarkContext, WifiContext } from "../context/AnimeContext";
+import { DarkContext } from "../context/AnimeContext";
 
 const Setting = () => {
   const { colors } = useTheme();
   const { darkMode, setDarkMode } = useContext(DarkContext);
-  const { wifiMode, setWifiMode } = useContext(WifiContext);
   const toggleDarkModeSwitch = () =>
     setDarkMode((previousState) => !previousState);
-
-  const toggleWifiSwitch = () => setWifiMode((prevState) => !prevState);
 
   return (
     <View style={styles.container}>
@@ -74,7 +71,6 @@ const Setting = () => {
           func={toggleDarkModeSwitch}
           title={"Dark Mode"}
         />
-        <List boolean={wifiMode} func={toggleWifiSwitch} title={"Wifi Only"} />
       </View>
     </View>
   );

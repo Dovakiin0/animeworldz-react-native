@@ -16,12 +16,13 @@ import {
   PopularContext,
   ScheduleContext,
   DarkContext,
-  WifiContext,
 } from "./app/context/AnimeContext";
 import axios from "axios";
 import Search from "./app/screens/Search";
 import Details from "./app/screens/Details";
 import Episode from "./app/screens/Episode";
+import * as Updates from "expo-updates";
+import { Alert } from "react-native";
 
 export default function App() {
   const Tab = createBottomTabNavigator();
@@ -29,7 +30,6 @@ export default function App() {
   const [popular, setPopular] = useState([]);
   const [schedule, setSchedule] = useState({});
   const [darkMode, setDarkMode] = useState(true);
-  const [wifiMode, setWifiMode] = useState(true);
 
   const Theme = darkMode ? DarkTheme : DefaultTheme;
 
@@ -51,37 +51,51 @@ export default function App() {
       .catch((err) => console.log(err));
   };
 
+  const fetchUpdates = async () => {
+    try {
+      const update = await Updates.checkForUpdateAsync();
+      if (update.isAvailable) {
+        await Updates.fetchUpdateAsync();
+        Alert.alert("Update Available! Restarting");
+        setTimeout(async () => {
+          await Updates.reloadAsync();
+        }, 2000);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
-    if (wifiMode) getPopular();
+    getPopular();
     getSchedule();
+    fetchUpdates();
   }, []);
 
   return (
     <DarkContext.Provider value={{ darkMode, setDarkMode }}>
-      <WifiContext.Provider value={{ wifiMode, setWifiMode }}>
-        <PopularContext.Provider value={{ popular }}>
-          <ScheduleContext.Provider value={{ schedule }}>
-            <NavigationContainer theme={Theme}>
-              <Stack.Navigator>
-                <Stack.Screen name="Home" options={{ headerShown: false }}>
-                  {(props) => <Home {...props} Tab={Tab} darkMode={darkMode} />}
-                </Stack.Screen>
-                <Stack.Screen
-                  name="Details"
-                  component={Details}
-                  options={({ route }) => ({ title: route.params.title })}
-                />
-                <Stack.Screen
-                  name="Episode"
-                  component={Episode}
-                  options={({ route }) => ({ title: route.params.title })}
-                />
-              </Stack.Navigator>
-              <StatusBar style={darkMode ? "light" : "dark"} />
-            </NavigationContainer>
-          </ScheduleContext.Provider>
-        </PopularContext.Provider>
-      </WifiContext.Provider>
+      <PopularContext.Provider value={{ popular }}>
+        <ScheduleContext.Provider value={{ schedule }}>
+          <NavigationContainer theme={Theme}>
+            <Stack.Navigator>
+              <Stack.Screen name="Home" options={{ headerShown: false }}>
+                {(props) => <Home {...props} Tab={Tab} darkMode={darkMode} />}
+              </Stack.Screen>
+              <Stack.Screen
+                name="Details"
+                component={Details}
+                options={({ route }) => ({ title: route.params.title })}
+              />
+              <Stack.Screen
+                name="Episode"
+                component={Episode}
+                options={({ route }) => ({ title: route.params.title })}
+              />
+            </Stack.Navigator>
+            <StatusBar style={darkMode ? "light" : "dark"} />
+          </NavigationContainer>
+        </ScheduleContext.Provider>
+      </PopularContext.Provider>
     </DarkContext.Provider>
   );
 }
