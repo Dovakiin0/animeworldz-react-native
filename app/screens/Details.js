@@ -12,7 +12,7 @@ const Details = ({ route }) => {
   const { colors } = useTheme();
   const [animeDetails, setAnimeDetails] = useState({});
   const { uri, link } = route.params;
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorite, setIsFavorite] = useState();
   const isFocused = useIsFocused();
 
   const getAnimeDetails = () => {
@@ -29,6 +29,7 @@ const Details = ({ route }) => {
   const fetchFavourites = async () => {
     try {
       const value = await AsyncStorage.getItem(`${animeDetails.title}`);
+      console.log(value);
       if (value !== null) setIsFavorite(true);
     } catch (error) {
       console.log(error);
@@ -40,7 +41,7 @@ const Details = ({ route }) => {
   }, []);
 
   useEffect(() => {
-    if (isFocused) fetchFavourites();
+    fetchFavourites();
   }, [isFocused]);
 
   const handleClickFavourite = () => {
@@ -67,6 +68,8 @@ const Details = ({ route }) => {
         .catch((err) => console.log(err));
     }
   };
+
+  console.log(isFavorite);
 
   return Object.entries(animeDetails).length !== 0 ? (
     <View style={styles.container}>

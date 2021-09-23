@@ -13,9 +13,10 @@ const Favourite = () => {
   const [favourite, setFavourite] = useState([]);
   const isFocused = useIsFocused();
 
-  const fetchkeys = async () => {
+  const fetchkeys = async (cb) => {
     let key = await AsyncStorage.getAllKeys();
     setKeys(key);
+    cb();
   };
 
   const fetchFavourites = () => {
@@ -32,11 +33,12 @@ const Favourite = () => {
   };
 
   useEffect(() => {
-    fetchFavourites();
-    fetchkeys();
+    fetchkeys(() => {
+      fetchFavourites();
+    });
   }, [isFocused]);
 
-  return favourite.length >= 0 ? (
+  return favourite.length >= 0 && favourite[0] !== null ? (
     <View style={styles.container}>
       <Text style={[{ color: colors.text }, styles.title]}>Favourites</Text>
       <ScrollView>
